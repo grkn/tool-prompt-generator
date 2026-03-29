@@ -34,7 +34,7 @@ public class ReflectionUtility {
         return classList;
     }
 
-    private static List<Method> getToolMethodsInToolClass(List<Class> classList) {
+    public static List<Method> getToolMethodsInToolClass(List<Class> classList) {
         List<Method> toolMethods = new ArrayList<>();
         classList.stream().filter(aClass -> aClass.getDeclaredAnnotation(Tool.class) != null)
                 .map(aClass -> Arrays.stream(aClass.getDeclaredMethods())
