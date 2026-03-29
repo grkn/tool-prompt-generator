@@ -35,10 +35,7 @@ public final class DefaultToolManager implements ToolManager {
     @Override
     public String prepareToolPrompt(String scanPackage) {
         try {
-            String filePathOfPackage = scanPackage.replace(".", "/");
-            Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(filePathOfPackage);
-            List<Class> classList = getClassesForToolInformation(scanPackage, resources);
-
+            List<Class> classList = getClassesForToolInformation(scanPackage);
             Map<String, ToolData> toolMap = extractedToolInformationFromPackageScan(classList);
             return """
                     Your goal is to complete the requested task using available tools.
@@ -52,7 +49,9 @@ public final class DefaultToolManager implements ToolManager {
         }
     }
 
-    private static List<Class> getClassesForToolInformation(String scanPackage, Enumeration<URL> resources) throws ClassNotFoundException {
+    private static List<Class> getClassesForToolInformation(String scanPackage) throws ClassNotFoundException, IOException {
+        String filePathOfPackage = scanPackage.replace(".", "/");
+        Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(filePathOfPackage);
         List<Class> classList = new ArrayList<>();
         while (resources.hasMoreElements()) {
             URL url = resources.nextElement();

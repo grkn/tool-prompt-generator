@@ -30,7 +30,6 @@ public class Tools {
     public BaseToolResponse execute2(@ToolParameter(description = """
             Payload is filePath you need to read
             """) BaseToolRequest request) {
-        BaseToolResponse baseToolResponse = new BaseToolResponse();
-        return baseToolResponse;
+        return new BaseToolResponse();
     }
 }
