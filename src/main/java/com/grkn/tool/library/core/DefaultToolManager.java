@@ -3,11 +3,10 @@ package com.grkn.tool.library.core;
 
 import com.grkn.tool.library.annotation.Tool;
 import com.grkn.tool.library.annotation.ToolParameter;
+import com.grkn.tool.library.utility.ReflectionUtility;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.*;
-import java.net.URL;
 import java.util.*;
 
 public final class DefaultToolManager implements ToolManager {
@@ -35,7 +34,7 @@ public final class DefaultToolManager implements ToolManager {
     @Override
     public String prepareToolPrompt(String scanPackage) {
         try {
-            List<Class> classList = getToolClassesForToolInformation(scanPackage);
+            List<Class> classList = ReflectionUtility.scanToolClassesForToolInformation(scanPackage);
             Map<String, ToolData> toolMap = extractedToolInformationFromPackageScan(classList);
             return """
                     Your goal is to complete the requested task using available tools.
@@ -47,25 +46,6 @@ public final class DefaultToolManager implements ToolManager {
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static List<Class> getToolClassesForToolInformation(String scanPackage) throws ClassNotFoundException, IOException {
-        String filePathOfPackage = scanPackage.replace(".", "/");
-        Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(filePathOfPackage);
-        List<Class> classList = new ArrayList<>();
-        while (resources.hasMoreElements()) {
-            URL url = resources.nextElement();
-            File f = new File(url.getFile());
-            String[] fileNames = f.list();
-            if (fileNames != null) {
-                for (String name : fileNames) {
-                    if (name.endsWith(".class")) {
-                        classList.add(Class.forName(scanPackage + "." + name.replace(".class", "")));
-                    }
-                }
-            }
-        }
-        return classList;
     }
 
     public static boolean isWrapperType(Class<?> clazz) {
@@ -87,8 +67,9 @@ public final class DefaultToolManager implements ToolManager {
 
     private static Map<String, ToolData> extractedToolInformationFromPackageScan(List<Class> classList) {
         final Map<String, ToolData> toolDataMap = new HashMap<>();
-        classList.stream().filter(DefaultToolManager::containsToolAnnotationForClass)
-                .map(DefaultToolManager::listOfMethodsThatContainToolAnnotation)
+        classList.stream().filter(aClass -> aClass.getDeclaredAnnotation(Tool.class) != null)
+                .map(aClass -> Arrays.stream(aClass.getDeclaredMethods())
+                        .filter(method -> method.getDeclaredAnnotation(Tool.class) != null).toList())
                 .forEach(methods ->
                         methods.forEach(method -> iterateOverEachToolParameterAnnotationForToolInput(method, toolDataMap)
                         ));
@@ -214,15 +195,6 @@ public final class DefaultToolManager implements ToolManager {
                 .formatted(tool.name(),
                         variableName,
                         description);
-    }
-
-    private static List<Method> listOfMethodsThatContainToolAnnotation(Class aClass) {
-        return Arrays.stream(aClass.getDeclaredMethods())
-                .filter(method -> method.getDeclaredAnnotation(Tool.class) != null).toList();
-    }
-
-    private static boolean containsToolAnnotationForClass(Class aClass) {
-        return aClass.getDeclaredAnnotation(Tool.class) != null;
     }
 
     private static class QNode {
