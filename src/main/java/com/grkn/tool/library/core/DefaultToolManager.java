@@ -35,7 +35,7 @@ public final class DefaultToolManager implements ToolManager {
     @Override
     public String prepareToolPrompt(String scanPackage) {
         try {
-            List<Class> classList = getClassesForToolInformation(scanPackage);
+            List<Class> classList = getToolClassesForToolInformation(scanPackage);
             Map<String, ToolData> toolMap = extractedToolInformationFromPackageScan(classList);
             return """
                     Your goal is to complete the requested task using available tools.
@@ -49,7 +49,7 @@ public final class DefaultToolManager implements ToolManager {
         }
     }
 
-    private static List<Class> getClassesForToolInformation(String scanPackage) throws ClassNotFoundException, IOException {
+    private static List<Class> getToolClassesForToolInformation(String scanPackage) throws ClassNotFoundException, IOException {
         String filePathOfPackage = scanPackage.replace(".", "/");
         Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(filePathOfPackage);
         List<Class> classList = new ArrayList<>();
