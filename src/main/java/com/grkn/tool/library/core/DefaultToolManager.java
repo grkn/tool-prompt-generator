@@ -55,7 +55,7 @@ public final class DefaultToolManager implements ToolManager {
     private String describeTools(Map<String, ToolData> map) {
         StringBuilder sb = new StringBuilder();
         for (ToolData tool : map.values()) {
-            sb.append("- ").append(tool.getName())
+            sb.append("- Tool Name -> ").append(tool.getName())
                     .append(": ")
                     .append(tool.getDescription())
                     .append("\n")
