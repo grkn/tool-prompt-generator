@@ -54,13 +54,17 @@ public final class DefaultToolManager implements ToolManager {
 
     private String describeTools(Map<String, ToolData> map) {
         StringBuilder sb = new StringBuilder();
+        int counter = 1;
         for (ToolData tool : map.values()) {
-            sb.append("- Tool Name -> ").append(tool.getName())
-                    .append(": ")
+            sb.append(counter)
+                    .append("- Tool Name: ")
+                    .append(tool.getName())
+                    .append("\n\t")
+                    .append("- Tool Description: ")
                     .append(tool.getDescription())
-                    .append("\n")
                     .append(tool.getToolPayloadDescription())
                     .append("\n");
+            counter++;
         }
         return sb.toString();
     }

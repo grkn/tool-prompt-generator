@@ -13,10 +13,10 @@ public class ToolAnnotationTest {
 Your goal is to complete the requested task using available tools.
 
 Available Tools
-- READ_FILE: Goal: Read file
+1- Tool Name: READ_FILE
+	- Tool Description: Goal: Read file
 .....
 .....
-
 
 Tool input must be JSON shape when you use READ_FILE tool
 
@@ -27,16 +27,15 @@ JSON shape:
 }
 
 
-- READ_FILE2: Goal: Read file
+2- Tool Name: READ_FILE2
+	- Tool Description: Goal: Read file
 .....
 .....
-
 
 Tool input must be JSON shape when you use READ_FILE2 tool
 
 JSON shape:
-{"name": "name of user", "inner": {"innerName": "hidden name of user", "surname": "hidden surname of user", "innerExampleClazz2": {"innerName2": "hidden name2 of user"}}, "age": "age of user", "sum": "sum of something", "test": ["test of something"], "testOfInners": [{"innerName2": "hidden name2 of user"}]}
-""";
+{"name": "name of user", "inner": {"innerName": "hidden name of user", "surname": "hidden surname of user", "innerExampleClazz2": {"innerName2": "hidden name2 of user"}}, "age": "age of user", "sum": "sum of something", "test": ["test of something"], "testOfInners": [{"innerName2": "hidden name2 of user"}]}""";
         Assertions.assertEquals(result.trim(), descriptionPrompt.trim());
     }
 }
